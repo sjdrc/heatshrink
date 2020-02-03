@@ -298,35 +298,6 @@
 												title="Path to the WireGuard config."></i></label>
 									</div>
 								</div>
-
-								<div class="row mb-3">
-									<div class="col-md-4 col-sm-12">
-										<div class="btn-group inputToggleContainer" id="dns_over_tls">
-											{% if config.dns_over_tls %}
-												<button class="btn gradientOff" id="disableTLSoverDNS" disabled>OFF</button>
-												<button class="btn gradientOn" id="enableTLSoverDNS" disabled>ON</button>
-											{% else %}
-												<button class="btn gradientOn" id="disableTLSoverDNS" disabled>OFF</button>
-												<button class="btn gradientOff" id="enableTLSoverDNS" disabled>ON</button>
-											{% endif %}
-
-										</div>
-										<label for="dns_over_tls" style="display: block;"><span>Enable DNS over TLS <i class="fas fa-info-circle fa-sm"
-												data-toggle="tooltip" data-placement="top"
-												title="Toggle usage of DNS over TLS - this basically encrypts dns queries before they are sent to the configured DNS server"></i></span>
-												<br />
-												<span><a target="_blank" href="https://developers.cloudflare.com/1.1.1.1/dns-over-tls/">read more here</a></span>
-										</label>
-									</div>
-
-									<div class="col-md-4 col-sm-12" style="visibility: {{ 'visible' if config.dns_over_tls else 'hidden' }}" id="tls_servername_input">
-										<input type="text" id="tls_servername" class="form-control"
-											value="{{ config.tls_servername }}" value="{{ config.tls_servername }}" disabled>
-										<label for="tls_servername">TLS Servername <i class="fas fa-info-circle fa-sm"
-												data-toggle="tooltip" data-placement="top"
-												title="DNS over TLS requires that a TLS hostname is sent"></i></label>
-									</div>
-								</div>
 							</div>
 
 							<button class="primaryBtn saveAndRestartBtn" onclick="saveAndRestart();">Save and restart</button>

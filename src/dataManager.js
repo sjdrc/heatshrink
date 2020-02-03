@@ -61,8 +61,6 @@ exports.loadServerConfig = cb => {
 						allowed_ips: ["0.0.0.0/0"],
 						peers: [],
 						private_traffic: false,
-						dns_over_tls: true,
-						tls_servername: "tls.cloudflare-dns.com",
 					};
 
 					this.saveServerConfig(defaultSettings, err => {
@@ -138,31 +136,6 @@ exports.saveWireguardConfig = (server_config, cb) => {
 			return;
 		}
 
-		const coredns_config = nunjucks.render(
-			"templates/coredns_corefile.njk",
-			{
-				dns_over_tls: server_config.dns_over_tls,
-				ip: server_config.dns,
-				tls_servername: server_config.tls_servername,
-			}
-		);
-
-		// write new coredns config
-		fs.writeFile("/etc/coredns/Corefile", coredns_config, err => {
-			if (err) {
-				cb(err);
-				return;
-			}
-
-			// restart coredns
-			wgHelper.restartCoreDNS(err => {
-				if (err) {
-					cb(err);
-					return;
-				}
-
-				cb(null);
-			});
-		});
+		cb(null);
 	});
 };

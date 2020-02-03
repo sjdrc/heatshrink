@@ -216,17 +216,6 @@ exports.makeDashboardPublic = (state, cb) => {
 	);
 };
 
-exports.restartCoreDNS = cb => {
-	child_process.exec(`systemctl restart coredns`, (err, stdout, stderr) => {
-		if (err || stderr) {
-			cb(err);
-			return;
-		}
-
-		cb(null);
-	});
-};
-
 exports.enableUFW = (port, cb) => {
 	child_process.exec(`ufw allow ${port}`, (err, stdout, stderr) => {
 		if (err || stderr) {

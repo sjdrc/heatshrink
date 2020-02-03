@@ -130,26 +130,6 @@ $(document).ready(() => {
 		}
 	});
 
-	$("#enableTLSoverDNS").on("click", e => {
-		if (!$(e.currentTarget).hasClass("gradientOn")) {
-			$("#disableTLSoverDNS").removeClass("gradientOn");
-			$("#disableTLSoverDNS").addClass("gradientOff");
-			$(e.currentTarget).removeClass("gradientOff");
-			$(e.currentTarget).addClass("gradientOn");
-			config.dns_over_tls = true;
-		}
-	});
-
-	$("#disableTLSoverDNS").on("click", e => {
-		if (!$(e.currentTarget).hasClass("gradientOn")) {
-			$("#enableTLSoverDNS").removeClass("gradientOn");
-			$("#enableTLSoverDNS").addClass("gradientOff");
-			$(e.currentTarget).removeClass("gradientOff");
-			$(e.currentTarget).addClass("gradientOn");
-			config.dns_over_tls = false;
-		}
-	});
-
 	// edit server_settings
 	$("#server_settings").on("click", e => {
 		if ($(e.currentTarget).hasClass("editBtn")) {
@@ -179,14 +159,6 @@ $(document).ready(() => {
 			$("#config_path")
 				.attr("disabled", false)
 				.css("color", "#4285F4");
-			$("#tls_servername")
-				.attr("disabled", false)
-				.css("color", "#4285F4");
-			$("#dns_over_tls")
-				.attr("disabled", false)
-				.css("color", "#4285F4");
-			$("#enableTLSoverDNS").attr("disabled", false);
-			$("#disableTLSoverDNS").attr("disabled", false);
 		} else if ($(e.currentTarget).hasClass("saveBtn")) {
 			const ip_address = $("#ip_address").val();
 			const virtual_ip_address = $("#virtual_ip_address").val();
@@ -196,8 +168,6 @@ $(document).ready(() => {
 			const public_key = $("#public_key").val();
 			const network_adapter = $("#network_adapter").val();
 			const config_path = $("#config_path").val();
-			const dns_over_tls = $("#dns_over_tls").is(":checked");
-			const tls_servername = $("#tls_servername").val();
 
 			const req = $.ajax({
 				url: `/api/server_settings/save`,
@@ -210,9 +180,7 @@ $(document).ready(() => {
 					dns: dns,
 					public_key: public_key,
 					network_adapter: network_adapter,
-					config_path: config_path,
-					dns_over_tls: dns_over_tls,
-					tls_servername: tls_servername
+					config_path: config_path
 				}),
 				contentType: "application/json; charset=utf-8",
 				dataType: "json"
@@ -248,14 +216,6 @@ $(document).ready(() => {
 				$("#config_path")
 					.attr("disabled", true)
 					.css("color", "#495057");
-				$("#tls_servername")
-					.attr("disabled", true)
-					.css("color", "#495057");
-				$("#dns_over_tls")
-					.attr("disabled", true)
-					.css("color", "#495057");
-				$("#enableTLSoverDNS").attr("disabled", true);
-				$("#disableTLSoverDNS").attr("disabled", true);
 			});
 
 			req.catch(function(data) {
@@ -394,19 +354,6 @@ $(document).ready(() => {
 
 	$("#server_settings_items").on("change", "input", e => {
 		const target = $(e.currentTarget);
-
-		if (target[0].id === "dns_over_tls") {
-			const enableDNSOverTLS = $("#dns_over_tls").is(":checked");
-			config[target[0].id] = enableDNSOverTLS;
-			checkToast();
-
-			if (enableDNSOverTLS) {
-				$("#tls_servername_input").css("visibility", "visible");
-			} else {
-				$("#tls_servername_input").css("visibility", "hidden");
-			}
-			return;
-		}
 
 		if (target[0].id) {
 			config[target[0].id] = target.val();

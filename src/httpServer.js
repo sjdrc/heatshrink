@@ -522,8 +522,6 @@ exports.initServer = (state, cb) => {
 		state.server_config.cidr = req.body.cidr;
 		state.server_config.network_adapter = req.body.network_adapter;
 		state.server_config.config_path = req.body.config_path;
-		state.server_config.dns_over_tls = req.body.dns_over_tls;
-		state.server_config.tls_servername = req.body.tls_servername;
 
 		// disable old wireguard port
 		wireguardHelper.disableUFW(state.server_config.port, err => {
