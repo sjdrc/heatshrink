@@ -1,3 +1,2 @@
-/node_modules
-wireguard/
+node_modules
 server_config.json
