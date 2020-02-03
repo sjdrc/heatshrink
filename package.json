@@ -1,22 +1,22 @@
 {
-  "name": "wireguard-dashboard",
-  "version": "0.21.1",
+  "name": "heatshrink",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "server": "node-dev --respawn --no-notify ./src/server.js"
+    "serve": "node ./src/server.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/daluf/wireguard-dashboard.git"
+    "url": "git+https://github.com/sjdrc/heatshrink.git"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/daluf/wireguard-dashboard/issues"
+    "url": "https://github.com/sjdrc/heatshrink/issues"
   },
-  "homepage": "https://github.com/daluf/wireguard-dashboard#readme",
+  "homepage": "https://github.com/sjdrc/heatshrink#readme",
   "dependencies": {
     "bcrypt": "^3.0.6",
     "body-parser": "^1.19.0",
