@@ -57,10 +57,9 @@ exports.loadServerConfig = cb => {
 						port: "58210",
 						dns: "1.1.1.1",
 						network_adapter: network_adapter,
-						config_path: "/etc/wireguard/wg0.conf",
+						wg_interface: "wg0",
 						allowed_ips: ["0.0.0.0/0"],
-						peers: [],
-						private_traffic: false,
+						peers: []
 					};
 
 					this.saveServerConfig(defaultSettings, err => {
@@ -130,7 +129,7 @@ exports.saveWireguardConfig = (server_config, cb) => {
 	});
 
 	// write main config
-	fs.writeFile(server_config.config_path, config, {mode: 0o600}, err => {
+	fs.writeFile("/etc/wireguard/" + server_config.wg_interface + ".conf", config, {mode: 0o600}, err => {
 		if (err) {
 			cb(err);
 			return;

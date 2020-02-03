@@ -11,7 +11,8 @@ function main() {
 
 		const state = {
 			config: {
-				port: server_config.webserver_port || 3000,
+				port: server_config.webserver_port,
+				bind_ip: server_config.bind_ip,
 				devLogs: false
 			},
 			server_config: null

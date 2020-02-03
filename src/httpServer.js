@@ -258,6 +258,7 @@ exports.initServer = (state, cb) => {
 					}
 
 					wireguardHelper.addPeer(
+						state.server_config.wg_interface,
 						{
 							public_key: data.public_key,
 							allowed_ips: virtual_ip,
@@ -334,6 +335,7 @@ exports.initServer = (state, cb) => {
 
 			if (old_active === false && peer.active === true) {
 				wireguardHelper.addPeer(
+					state.server_config.wg_interface,
 					{
 						allowed_ips: peer.virtual_ip,
 						public_key: peer.public_key,
@@ -354,6 +356,7 @@ exports.initServer = (state, cb) => {
 				);
 			} else if (old_active === true && peer.active === false) {
 				wireguardHelper.deletePeer(
+					state.server_config.wg_interface,
 					{
 						public_key: peer.public_key,
 					},
@@ -414,6 +417,7 @@ exports.initServer = (state, cb) => {
 			}
 
 			wireguardHelper.deletePeer(
+				state.server_config.wg_interface,
 				{
 					public_key,
 				},
@@ -521,7 +525,8 @@ exports.initServer = (state, cb) => {
 		state.server_config.dns = req.body.dns;
 		state.server_config.cidr = req.body.cidr;
 		state.server_config.network_adapter = req.body.network_adapter;
-		state.server_config.config_path = req.body.config_path;
+		state.server_config.wg_interface = req.body.wg_interface
+		state.server_config.config_path = "/etc/wireguard/" + state.server_config.wg_interface + ".conf";
 
 		// disable old wireguard port
 		wireguardHelper.disableUFW(state.server_config.port, err => {
@@ -630,7 +635,7 @@ exports.initServer = (state, cb) => {
 	});
 
 	app.post("/api/saveandrestart", (req, res) => {
-		wireguardHelper.stopWireguard(err => {
+		wireguardHelper.stopWireguard(state.server_config.wg_interface, err => {
 			if (err) {
 				res.status(500).send({
 					msg: "COULD_NOT_STOP_WIREGUARD",
@@ -646,7 +651,7 @@ exports.initServer = (state, cb) => {
 					return;
 				}
 
-				wireguardHelper.startWireguard(err => {
+				wireguardHelper.startWireguard(state.server_config.wg_interface, err => {
 					if (err) {
 						res.status(500).send({
 							msg: "COULD_NOT_START_WIREGUARD",
@@ -813,37 +818,5 @@ exports.initServer = (state, cb) => {
 		}
 	});
 
-	app.post("/api/switchtrafficmode", (req, res) => {
-		if (state.server_config.private_traffic) {
-			wireguardHelper.makeDashboardPublic(state, err => {
-				if (err) {
-					res.status(500).send({
-						msg: err.toString(),
-					});
-					return;
-				}
-
-				state.server_config.private_traffic = false;
-				res.status(200).send({
-					msg: "OK",
-				});
-			});
-		} else {
-			wireguardHelper.makeDashboardPrivate(state, err => {
-				if (err) {
-					res.status(500).send({
-						msg: err.toString(),
-					});
-					return;
-				}
-
-				state.server_config.private_traffic = true;
-				res.status(200).send({
-					msg: "OK",
-				});
-			});
-		}
-	});
-
-	app.listen(state.config.port, cb);
+	app.listen(state.config.port, state.config.bind_ip);
 };

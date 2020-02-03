@@ -291,11 +291,11 @@
 									</div>
 
 									<div class="col-md-4 col-sm-12">
-										<input type="text" id="config_path" class="form-control"
-											value="{{ config.config_path }}" disabled>
-										<label for="config_path">Config Path <i class="fas fa-info-circle fa-sm"
+										<input type="text" id="wg_interface" class="form-control"
+											value="{{ config.wg_interface }}" disabled>
+										<label for="wg_interface">WireGuard Interface <i class="fas fa-info-circle fa-sm"
 												data-toggle="tooltip" data-placement="top"
-												title="Path to the WireGuard config."></i></label>
+												title="Name of the WireGuard Interface."></i></label>
 									</div>
 								</div>
 							</div>
@@ -347,7 +347,6 @@
 </div>
 
 <script>
-	let private_traffic = {{ config.private_traffic }}
 	let _config = {{ config | dump | safe }}
 	let config = {{ config | dump | safe }}
 </script>

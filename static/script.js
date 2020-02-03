@@ -156,7 +156,7 @@ $(document).ready(() => {
 			$("#network_adapter")
 				.attr("disabled", false)
 				.css("color", "#4285F4");
-			$("#config_path")
+			$("#wg_interface")
 				.attr("disabled", false)
 				.css("color", "#4285F4");
 		} else if ($(e.currentTarget).hasClass("saveBtn")) {
@@ -167,7 +167,7 @@ $(document).ready(() => {
 			const dns = $("#dns").val();
 			const public_key = $("#public_key").val();
 			const network_adapter = $("#network_adapter").val();
-			const config_path = $("#config_path").val();
+			const wg_interface = $("#wg_interface").val();
 
 			const req = $.ajax({
 				url: `/api/server_settings/save`,
@@ -180,7 +180,7 @@ $(document).ready(() => {
 					dns: dns,
 					public_key: public_key,
 					network_adapter: network_adapter,
-					config_path: config_path
+					wg_interface: wg_interface
 				}),
 				contentType: "application/json; charset=utf-8",
 				dataType: "json"
@@ -213,7 +213,7 @@ $(document).ready(() => {
 				$("#network_adapter")
 					.attr("disabled", true)
 					.css("color", "#495057");
-				$("#config_path")
+				$("#wg_interface")
 					.attr("disabled", true)
 					.css("color", "#495057");
 			});

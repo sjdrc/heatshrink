@@ -81,8 +81,8 @@ exports.generateKeyPair = cb => {
 	});
 };
 
-exports.stopWireguard = cb => {
-	child_process.exec("systemctl stop wg-quick@wg0", (err, stdout, stderr) => {
+exports.stopWireguard = (wg_iface, cb) => {
+	child_process.exec(`systemctl stop wg-quick@${wg_iface}`, (err, stdout, stderr) => {
 		if (err || stderr) {
 			cb(err);
 			return;
@@ -92,9 +92,9 @@ exports.stopWireguard = cb => {
 	});
 };
 
-exports.startWireguard = cb => {
+exports.startWireguard = (wg_iface, cb) => {
 	child_process.exec(
-		"systemctl start wg-quick@wg0",
+		`systemctl start wg-quick@${wg_iface}`,
 		(err, stdout, stderr) => {
 			if (err || stderr) {
 				cb(err);
@@ -106,9 +106,9 @@ exports.startWireguard = cb => {
 	);
 };
 
-exports.wireguardStatus = cb => {
+exports.wireguardStatus = (wg_iface, cb) => {
 	child_process.exec(
-		"journalctl -u wg-quick@wg0.service -n 100",
+		`journalctl -u wg-quick@${wg_iface}.service -n 100`,
 		(err, stdout, stderr) => {
 			if (err || stderr) {
 				cb(err);
@@ -122,7 +122,7 @@ exports.wireguardStatus = cb => {
 
 exports.getNetworkAdapter = cb => {
 	child_process.exec(
-		"ip route | grep default | cut -d ' ' -f 5",
+		`ip route | grep default | awk '{print $5}'`,
 		(err, stdout, stderr) => {
 			if (err || stderr) {
 				cb(err);
@@ -136,7 +136,7 @@ exports.getNetworkAdapter = cb => {
 
 exports.getNetworkIP = cb => {
 	child_process.exec(
-		"ifconfig eth0 | grep inet | head -n 1 | xargs | cut -d ' ' -f 2",
+		`ip addr show $(ip route | grep default | awk '{print $5}') | grep -m1 'inet ' | awk '{print $2}' | cut -d'/' -f1`,
 		(err, stdout, stderr) => {
 			if (err || stderr) {
 				cb(err);
@@ -148,9 +148,9 @@ exports.getNetworkIP = cb => {
 	);
 };
 
-exports.addPeer = (peer, cb) => {
+exports.addPeer = (wg_iface, peer, cb) => {
 	child_process.exec(
-		`wg set wg0 peer ${peer.public_key} allowed-ips ${peer.allowed_ips}/32`,
+		`wg set ${wg_iface} peer ${peer.public_key} allowed-ips ${peer.allowed_ips}/32`,
 		(err, stdout, stderr) => {
 			if (err || stderr) {
 				cb(err);
@@ -162,9 +162,9 @@ exports.addPeer = (peer, cb) => {
 	);
 };
 
-exports.deletePeer = (peer, cb) => {
+exports.deletePeer = (wg_iface, peer, cb) => {
 	child_process.exec(
-		`wg set wg0 peer ${peer.public_key} remove`,
+		`wg set ${wg_iface} peer ${peer.public_key} remove`,
 		(err, stdout, stderr) => {
 			if (err || stderr) {
 				cb(err);
@@ -172,46 +172,6 @@ exports.deletePeer = (peer, cb) => {
 			}
 
 			cb(null);
-		}
-	);
-};
-
-exports.makeDashboardPrivate = (state, cb) => {
-	child_process.exec(
-		`ufw delete allow 3000 ; ufw deny in on ${state.server_config
-			.network_adapter || "eth0"} to any port 3000`,
-		(err, stdout, stderr) => {
-			if (err || stderr) {
-				cb(err);
-				return;
-			}
-
-			child_process.exec(
-				"ufw allow in on wg0 to any port 3000",
-				(err, stdout, stderr) => {
-					if (err || stderr) {
-						cb(err);
-						return;
-					}
-
-					cb(null, stdout.replace(/\n/, ""));
-				}
-			);
-		}
-	);
-};
-
-exports.makeDashboardPublic = (state, cb) => {
-	child_process.exec(
-		`ufw allow in on ${state.server_config.network_adapter ||
-			"eth0"} to any port 3000`,
-		(err, stdout, stderr) => {
-			if (err || stderr) {
-				cb(err);
-				return;
-			}
-
-			cb(null, stdout.replace(/\n/, ""));
 		}
 	);
 };
