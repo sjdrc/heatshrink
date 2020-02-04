@@ -1,0 +1,11 @@
+[Unit]
+Description=HeatShrink service
+After=network.target
+
+[Service]
+Restart=always
+WorkingDirectory=/opt/heatshrink
+ExecStart=/usr/bin/npm run serve
+
+[Install]
+WantedBy=multi-user.target
